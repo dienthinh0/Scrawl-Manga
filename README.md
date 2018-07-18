@@ -1,7 +1,7 @@
 # Scrawl-Manga
 Scrawl Manga is get manga from some web manga, it will write to file pdf, used for another device when offline.
 
-Using python 3
+Using python 3.7
 
 Syntax:
     FeedMangaToPdf.py url
@@ -9,3 +9,4 @@ Syntax:
 
 Support Webpage:
   Mangapark.me
+  Mangapark.com

@@ -13,7 +13,7 @@ class Process:
         self.name= name_a
         if len(self.name)>20:
             self.name = self.name[:7]+"..."+self.name[-7:]
-        self.total =total_a+1
+        self.total =total_a
         self.callback = callback_a
         widget = [Bar(left=self.name+ '('+str(self.total) +')'+' [',right=']'), ' [', progressbar.Timer(), '] ']
         self.progressUI = progressbar.ProgressBar(maxval =self.total,widgets = widget)
