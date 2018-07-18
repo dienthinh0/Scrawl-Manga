@@ -82,7 +82,7 @@ def WritePDF(name,datas,outputDir):
         scaleratio = scalew if scalew>scaleh else scaleh
         pdf.image(tempfile,0 if width<=(w/scaleratio) else (width-w/scaleratio)/2,0 if height<=(h/scaleratio) else (height-h/scaleratio)/2,w/scaleratio ,h/scaleratio)
     pdf.output(outputDir + name +".pdf", "F")
-    # shutil.rmtree(tempfolder)
+    shutil.rmtree(tempfolder)
     print("Writing Done")
     
 def CallbackDone():
