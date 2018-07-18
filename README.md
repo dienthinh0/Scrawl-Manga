@@ -10,3 +10,4 @@ Syntax:
 Support Webpage:
   Mangapark.me
   Mangapark.com
+  Mangadex.org

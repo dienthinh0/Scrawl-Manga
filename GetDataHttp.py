@@ -28,14 +28,13 @@ def GetDataImageStr(url):
     return imagesData
 
 def DownloadAllImage(imagesUrl):
-    print (len(imagesUrl))
     FileImages = []
     progress =Process.Process()
     progress.setup(imagesUrl[0],len(imagesUrl[1]),CallbackDone)
     progress.start()
     for imageUrl in imagesUrl[1]:
         # UpdateUI
-        FileImages.append(Download(imageUrl))
+        FileImages.append([Download(imageUrl),imageUrl.split('.')[-1:][0]])
         progress.update()
         
     return FileImages
@@ -50,24 +49,41 @@ def createfolder(dir):
 def WritePDF(name,datas,outputDir):
     print("Writing")
     createfolder(outputDir)
-    cover = Image.open(io.BytesIO(datas[0]))
-    width, height = cover.size
+    # find best size
+    wh = []
+    width=0
+    height = 0
+    for data in datas:
+        cover = Image.open(io.BytesIO(data[0]))
+        w, h = cover.size
+        if w in wh:
+            width = w
+            height= h
+            break
+        else:
+            wh.append(w)
     pdf = FPDF(unit = "pt", format = [width, height])
     i=0
     tempfolder = './temp/'
     createfolder(tempfolder)
+    # Start add images
     for data in datas:
         pdf.add_page()
-        tempfile = tempfolder+"temp"+str(i)+".jpg"
         i=i+1
+        tempfile = tempfolder+"temp"+str(i)+"."+data[1]
         with open(tempfile, 'wb') as file:
-            file.write(data)
+            file.write(data[0])
             file.close()
-        pdf.image(tempfile, 0, 0)
-        
+        #make center image and scale
+        cover = Image.open(io.BytesIO(data[0]))
+        w, h = cover.size
+        scalew = 1.0 if w<=width else 1.0*w/width
+        scaleh = 1.0 if h<=height else 1.0*h/height
+        scaleratio = scalew if scalew>scaleh else scaleh
+        pdf.image(tempfile,0 if width<=(w/scaleratio) else (width-w/scaleratio)/2,0 if height<=(h/scaleratio) else (height-h/scaleratio)/2,w/scaleratio ,h/scaleratio)
     pdf.output(outputDir + name +".pdf", "F")
-    shutil.rmtree(tempfolder)
-    print("Writin Done")
+    # shutil.rmtree(tempfolder)
+    print("Writing Done")
     
 def CallbackDone():
     print("Done")
@@ -79,4 +95,8 @@ def Parse(url):
         exit()
     images = DownloadAllImage(data)
     WritePDF(data[0].strip(),images,Folder+data[0].strip()+"/")
-    
+
+def DebugData(str):
+    with open("webhtml.txt","w",encoding= "utf-8") as f:
+        f.write(str)
+        f.close
