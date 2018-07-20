@@ -4,7 +4,7 @@ from win32api import GetSystemMetrics
 import UIController
 
 class AppUI(Frame):
-    MaxColumn  = 4
+    MaxColumn  = 2
     def __init__(self,master=None):
         Frame.__init__(self,master,relief=RAISED,bd=2)
         self.parent = master
@@ -12,7 +12,7 @@ class AppUI(Frame):
         #create UI component
         self.CreateMenu()
         self.CreateButtons()
-        self.CreateDownloadField()
+        self.CreateDisplayField()
         
         try:
             self.master.config(menu = self.menubar)
@@ -35,20 +35,20 @@ class AppUI(Frame):
         help.add_command (label = "Report",command=self.OnReport)
         
     def CreateButtons(self,r=0):
-        panel = PanedWindow(self,width=GetSystemMetrics(0))
-        panel.grid(row=r,column = 0, columnspan =self.MaxColumn,sticky=W)
-        buttons = PanedWindow(self,width=GetSystemMetrics(0))
+        parrent = PanedWindow(self)
+        parrent.grid(row=r,column=0, columnspan=self.MaxColumn,sticky=W)
+        buttons = PanedWindow(parrent,width=GetSystemMetrics(0))
         buttons.grid(row=r,column=0, columnspan=self.MaxColumn,sticky=W)
         
-        start = Button(buttons, text="start", compound = LEFT,command = self.OnStast)
-        start.grid(row=0, column=0,sticky=W)
+        inValue = StringVar()
+        inValueEntry = Entry(buttons)
+        inValueEntry.grid(row=r,column=0, columnspan=self.MaxColumn,sticky="we")
         
-        stop= Button(buttons, text="stops",command = self.OnStop)
-        stop.grid(row=0, column=1,sticky=W)
-        
+        download = Button(buttons, text="download(s)", compound = LEFT,command = self.OnStast, width=20)
+        download.grid(row=r, column=1,sticky=W)
 
-    def CreateDownloadField(self,r=1):
-        panel = PanedWindow(self)
+    def CreateDisplayField(self,r=1):
+        panel = PanedWindow(self,width=GetSystemMetrics(0))
         panel.grid(row=r,column = 0, columnspan =self.MaxColumn,sticky=W)
         
     #Function in UI
@@ -77,5 +77,5 @@ root.minsize(500, 250)
 root.pack_propagate(0)
 app = AppUI(root)
 app.pack()
-
+root.resizable(False,True)
 root.mainloop()
